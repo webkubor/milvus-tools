@@ -1,0 +1,17 @@
+{
+  "name": "milvus-tools",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "milvus:smoke": "node milvus-smoke.mjs",
+    "milvus:init": "node milvus-init-collection.mjs",
+    "milvus:rebuild": "node milvus-rebuild.mjs",
+    "milvus:ingest": "node milvus-ingest-ai-common.mjs",
+    "milvus:search": "node milvus-search.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.25.2",
+    "@zilliz/milvus2-sdk-node": "^2.6.9"
+  }
+}

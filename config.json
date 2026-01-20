@@ -1,0 +1,51 @@
+{
+  "milvus": {
+    "address": "127.0.0.1:19530",
+    "collection": "ai_common_chunks",
+    "docker": {
+      "composePath": "~/Documents/milvus",
+      "serviceName": "milvus-standalone",
+      "attuUrl": "http://127.0.0.1:8000"
+    }
+  },
+  "dataSource": {
+    "root": "~/Documents/AI_Common",
+    "filePatterns": ["*.md"],
+    "privacyExcludeFile": "privacy_excludes.md"
+  },
+  "embedding": {
+    "provider": "ollama",
+    "ollama": {
+      "baseUrl": "http://127.0.0.1:11434",
+      "model": "nomic-embed-text",
+      "dimension": 768,
+      "concurrency": 4
+    },
+    "openai": {
+      "apiKey": "",
+      "model": "text-embedding-3-small",
+      "dimension": 1536,
+      "baseUrl": "https://api.openai.com/v1"
+    }
+  },
+  "chunking": {
+    "minChars": 200,
+    "maxChars": 1200,
+    "headingDelimiters": ["#", "##", "###"]
+  },
+  "search": {
+    "topK": 10,
+    "metricType": "COSINE"
+  },
+  "ingest": {
+    "batchSize": 64
+  },
+  "index": {
+    "type": "HNSW",
+    "metricType": "COSINE",
+    "params": {
+      "M": 16,
+      "efConstruction": 200
+    }
+  }
+}

@@ -1,8 +1,9 @@
 import { MilvusClient } from '@zilliz/milvus2-sdk-node'
+import { config } from './config-loader.mjs'
 
-const address = process.env.MILVUS_ADDR || '127.0.0.1:19530'
+const milvusConfig = config.getMilvusConfig()
 
-const client = new MilvusClient({ address })
+const client = new MilvusClient({ address: milvusConfig.address })
 
 const version = await client.getVersion()
 console.log('Milvus version:', version)

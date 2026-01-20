@@ -39,6 +39,24 @@ docker compose up -d
 
 等待 Milvus 启动完成（约 1-2 分钟）。
 
+## 快捷启动命令
+
+| 命令 | 说明 |
+|------|------|
+| `pnpm run milvus:init` | 使用当前 Schema 和配置在 Milvus 中初始化 Collection。|
+| `pnpm run milvus:ingest` | 使用配置的 Embedding Provider 批量写入向量数据。|
+| `pnpm run milvus:search -- "关键词"` | 发送语义检索请求，快速验证数据。|
+| `pnpm run milvus:smoke` | 检查 Milvus 连接与 Collection 健康状态。|
+
+要快速体验完整流程，可以执行以下命令（假设 Milvus 与 Ollama 已启动）：
+
+```bash
+pnpm run milvus:init && \
+EMBED_PROVIDER=ollama OLLAMA_MODEL=nomic-embed-text EMBEDDING_DIM=768 pnpm run milvus:ingest
+```
+
+之后运行 `pnpm run milvus:search -- "你的关键词"` 来验搜，`pnpm run milvus:smoke` 可随时确认服务健康。
+
 ### 4. 配置 Ollama（可选，用于本地 Embedding）
 
 ```bash

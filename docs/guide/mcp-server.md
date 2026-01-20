@@ -16,7 +16,7 @@ MILVUS_PORT=19530 \
 OLLAMA_MODEL=nomic-embed-text \
 OLLAMA_BASE_URL=http://127.0.0.1:11434 \
 EMBEDDING_DIM=768 \
-node milvus-mcp-server.js
+node scripts/mcp/milvus-mcp-server.js
 ```
 
 - `EMBEDDING_DIM` 必须与你当前使用的 Schema 向量维度一致。

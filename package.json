@@ -8,13 +8,14 @@
     "milvus:init": "node scripts/collection/milvus-init-collection.mjs",
     "milvus:rebuild": "node scripts/collection/milvus-rebuild.mjs",
     "milvus:ingest": "node scripts/ingest/milvus-ingest-ai-common.mjs",
-    "milvus:search": "node scripts/search/milvus-search.mjs"
+    "milvus:search": "node scripts/search/milvus-search.mjs",
+    "docs:dev": "vitepress dev docs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.25.2",
     "@zilliz/milvus2-sdk-node": "^2.6.9"
   },
-  "description": "> 目标：把 `~/Documents/AI_Common` 作为“根（Source of Truth）”，通过 **全量重建** 的方式，把内容切片、向量化并写入本机 **Milvus**，用于后续语义检索与 RAG 注入。",
+  "description": "Milvus 本地向量库工具，配套 VitePress 文档与 CLI 脚本，支持快速构建 AI RAG 工作流。",
   "main": "milvus-mcp-server.js",
   "directories": {
     "example": "examples"

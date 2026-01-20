@@ -211,6 +211,8 @@ const mySchema = cloneSchema(baseSchema, {
 
 - 脚本和模块均已按功能归类到 `scripts/` 目录（例如 `scripts/collection/`、`scripts/ingest/`、`scripts/search/` 等），按需组合即可构建全量重建、语义搜和 MCP 接入的工作流。已有 `scripts/quick-launch.sh` 将 collection 初始化 + 入库打包成一条命令，适合快速实验。
 
+需要检查文档效果？`pnpm run docs:dev` 会启动 VitePress 本地服务器，实时呈现 `docs/` 内容，方便调试和确认样式。
+
 ## 下一步
 
 - 📖 [Schema 预设详解](/schemas/) - 了解各种预设 Schema

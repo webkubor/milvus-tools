@@ -131,6 +131,19 @@ EMBEDDING_DIM=768 \
 pnpm run milvus:search -- "隐私 入库 排除"
 ```
 
+### 4.6 本地预览文档站点
+
+```bash
+cd ~/Documents/milvus-tools
+pnpm run docs:dev
+```
+
+该命令会在 `http://localhost:4173`（默认）启动 VitePress 开发服务，自动编译 `docs/` 下的文档，方便看到最新改动。
+
+配置细节请参考 `docs/guide/config.md`，与本仓库同步更新。
+
+所有脚本已根据功能归类到 `scripts/` 目录下（例如 `scripts/collection/`、`scripts/ingest/`、`scripts/search/`、`scripts/health/`、`scripts/mcp/`），共享模块置于 `scripts/common/`。`package.json` 中的 `milvus:*` 命令即通过这些组织好的入口文件连接 Milvus 服务。
+
 ## 5. 默认约定（你需要知道的“规则”）
 
 ### 5.1 Collection

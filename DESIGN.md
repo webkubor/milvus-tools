@@ -13,14 +13,14 @@
 
 | 模块 | 功能 | 通用性 |
 |-----|------|--------|
-| `milvus-chunker.mjs` | Markdown 切片 | ⭐⭐⭐ 高度通用 |
-| `milvus-embed-mock.mjs` | Mock embedding | ⭐⭐ 开发工具 |
-| `milvus-embed-ollama.mjs` | Ollama embedding | ⭐⭐⭐ 高度通用 |
-| `milvus-init-collection.mjs` | Collection 初始化 | ⭐⭐ 中等（需解耦 schema） |
-| `milvus-ingest-ai-common.mjs` | 数据入库 | ⭐ 低（强耦合业务逻辑） |
-| `milvus-search.mjs` | 向量搜索 | ⭐⭐⭐ 高度通用 |
-| `milvus-rebuild.mjs` | 重建 collection | ⭐⭐ 中等通用 |
-| `milvus-mcp-server.js` | MCP 服务器 | ⭐⭐⭐ 高度通用 |
+| `scripts/ingest/milvus-chunker.mjs` | Markdown 切片 | ⭐⭐⭐ 高度通用 |
+| `scripts/ingest/milvus-embed-mock.mjs` | Mock embedding | ⭐⭐ 开发工具 |
+| `scripts/ingest/milvus-embed-ollama.mjs` | Ollama embedding | ⭐⭐⭐ 高度通用 |
+| `scripts/collection/milvus-init-collection.mjs` | Collection 初始化 | ⭐⭐ 中等（需解耦 schema） |
+| `scripts/ingest/milvus-ingest-ai-common.mjs` | 数据入库 | ⭐ 低（强耦合业务逻辑） |
+| `scripts/search/milvus-search.mjs` | 向量搜索 | ⭐⭐⭐ 高度通用 |
+| `scripts/collection/milvus-rebuild.mjs` | 重建 collection | ⭐⭐ 中等通用 |
+| `scripts/mcp/milvus-mcp-server.js` | MCP 服务器 | ⭐⭐⭐ 高度通用 |
 
 ## 改造方案
 

@@ -1,0 +1,264 @@
+{
+  "$schema": "./schema-template.json",
+  "_comment": "Milvus Schema 配置示例",
+  "_note": "可以使用预设名称（如 'rag', 'simple'）或自定义 schema",
+
+  "presets": {
+    "rag_document": "rag",
+    "simple_text": "simple",
+    "full_metadata": "full_metadata",
+    "code_snippet": "code",
+    "image_search": "image",
+    "multilingual": "multilingual",
+    "conversation": "conversation",
+    "product_catalog": "product"
+  },
+
+  "examples": {
+    "minimal": {
+      "collectionName": "minimal_collection",
+      "dimension": 768,
+      "fields": [
+        {
+          "name": "id",
+          "data_type": "Int64",
+          "is_primary_key": true,
+          "autoID": true
+        },
+        {
+          "name": "vector",
+          "data_type": "FloatVector",
+          "dim": 768
+        },
+        {
+          "name": "content",
+          "data_type": "VarChar",
+          "max_length": 8192
+        }
+      ],
+      "index": {
+        "field_name": "vector",
+        "index_name": "vector_flat",
+        "index_type": "FLAT",
+        "metric_type": "COSINE"
+      }
+    },
+
+    "with_metadata": {
+      "collectionName": "docs_with_metadata",
+      "dimension": 1536,
+      "fields": [
+        {
+          "name": "id",
+          "data_type": "Int64",
+          "is_primary_key": true,
+          "autoID": true
+        },
+        {
+          "name": "vector",
+          "data_type": "FloatVector",
+          "dim": 1536
+        },
+        {
+          "name": "content",
+          "data_type": "VarChar",
+          "max_length": 16384
+        },
+        {
+          "name": "title",
+          "data_type": "VarChar",
+          "max_length": 512
+        },
+        {
+          "name": "author",
+          "data_type": "VarChar",
+          "max_length": 256
+        },
+        {
+          "name": "category",
+          "data_type": "VarChar",
+          "max_length": 128
+        },
+        {
+          "name": "tags",
+          "data_type": "VarChar",
+          "max_length": 1024
+        },
+        {
+          "name": "created_at",
+          "data_type": "Int64"
+        },
+        {
+          "name": "metadata",
+          "data_type": "JSON"
+        }
+      ],
+      "index": {
+        "field_name": "vector",
+        "index_name": "vector_hnsw",
+        "index_type": "HNSW",
+        "metric_type": "COSINE",
+        "params": {
+          "M": 16,
+          "efConstruction": 200
+        }
+      }
+    },
+
+    "code_repo": {
+      "collectionName": "code_search",
+      "dimension": 768,
+      "fields": [
+        {
+          "name": "id",
+          "data_type": "Int64",
+          "is_primary_key": true,
+          "autoID": true
+        },
+        {
+          "name": "vector",
+          "data_type": "FloatVector",
+          "dim": 768
+        },
+        {
+          "name": "code",
+          "data_type": "VarChar",
+          "max_length": 8192
+        },
+        {
+          "name": "language",
+          "data_type": "VarChar",
+          "max_length": 32
+        },
+        {
+          "name": "file_path",
+          "data_type": "VarChar",
+          "max_length": 512
+        },
+        {
+          "name": "repository",
+          "data_type": "VarChar",
+          "max_length": 128
+        },
+        {
+          "name": "line_start",
+          "data_type": "Int64"
+        },
+        {
+          "name": "line_end",
+          "data_type": "Int64"
+        },
+        {
+          "name": "function_name",
+          "data_type": "VarChar",
+          "max_length": 256
+        }
+      ],
+      "index": {
+        "field_name": "vector",
+        "index_name": "vector_hnsw",
+        "index_type": "HNSW",
+        "metric_type": "COSINE",
+        "params": {
+          "M": 32,
+          "efConstruction": 256
+        }
+      }
+    },
+
+    "multimodal": {
+      "collectionName": "multimodal_content",
+      "dimension": 1024,
+      "fields": [
+        {
+          "name": "id",
+          "data_type": "Int64",
+          "is_primary_key": true,
+          "autoID": true
+        },
+        {
+          "name": "vector",
+          "data_type": "FloatVector",
+          "dim": 1024
+        },
+        {
+          "name": "content_type",
+          "data_type": "VarChar",
+          "max_length": 32
+        },
+        {
+          "name": "text_content",
+          "data_type": "VarChar",
+          "max_length": 8192
+        },
+        {
+          "name": "media_url",
+          "data_type": "VarChar",
+          "max_length": 1024
+        },
+        {
+          "name": "media_type",
+          "data_type": "VarChar",
+          "max_length": 32
+        },
+        {
+          "name": "alt_text",
+          "data_type": "VarChar",
+          "max_length": 512
+        },
+        {
+          "name": "metadata",
+          "data_type": "JSON"
+        }
+      ],
+      "index": {
+        "field_name": "vector",
+        "index_name": "vector_hnsw",
+        "index_type": "HNSW",
+        "metric_type": "COSINE",
+        "params": {
+          "M": 16,
+          "efConstruction": 200
+        }
+      }
+    }
+  },
+
+  "embedding_models": {
+    "nomic-embed-text": {
+      "dimension": 768,
+      "recommended_schema": "rag",
+      "metric_type": "COSINE"
+    },
+    "text-embedding-3-small": {
+      "dimension": 1536,
+      "recommended_schema": "full_metadata",
+      "metric_type": "IP"
+    },
+    "text-embedding-3-large": {
+      "dimension": 3072,
+      "recommended_schema": "rag",
+      "metric_type": "IP"
+    },
+    "text-embedding-ada-002": {
+      "dimension": 1536,
+      "recommended_schema": "rag",
+      "metric_type": "COSINE"
+    },
+    "bge-large-zh": {
+      "dimension": 1024,
+      "recommended_schema": "multilingual",
+      "metric_type": "COSINE"
+    },
+    "jina-embeddings-v2-base-zh": {
+      "dimension": 768,
+      "recommended_schema": "multilingual",
+      "metric_type": "COSINE"
+    },
+    "mxbai-embed-large-v1": {
+      "dimension": 1024,
+      "recommended_schema": "rag",
+      "metric_type": "COSINE"
+    }
+  }
+}

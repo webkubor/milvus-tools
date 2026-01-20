@@ -1,0 +1,203 @@
+# 快速开始
+
+本指南将帮助你快速上手 Milvus Tools，在 5 分钟内搭建本地向量数据库。
+
+## 环境要求
+
+- **Node.js** >= 18.0
+- **pnpm** >= 8.0
+- **Docker** >= 20.10 (用于运行 Milvus)
+
+## 安装
+
+### 1. 克隆项目
+
+```bash
+git clone https://github.com/webkubor/milvus-tools.git
+cd milvus-tools
+```
+
+### 2. 安装依赖
+
+```bash
+pnpm install
+```
+
+### 3. 启动 Milvus
+
+```bash
+# 创建 Milvus 目录
+mkdir -p ~/Documents/milvus
+cd ~/Documents/milvus
+
+# 下载 docker-compose.yml
+curl -O https://github.com/milvus-io/milvus/releases/download/v2.6.1/milvus-standalone-docker-compose.yml -o docker-compose.yml
+
+# 启动服务
+docker compose up -d
+```
+
+等待 Milvus 启动完成（约 1-2 分钟）。
+
+### 4. 配置 Ollama（可选，用于本地 Embedding）
+
+```bash
+# 安装 Ollama
+brew install ollama
+
+# 启动服务
+brew services start ollama
+
+# 拉取模型
+ollama pull nomic-embed-text
+```
+
+## 基础使用
+
+### 健康检查
+
+验证 Milvus 服务是否正常运行：
+
+```bash
+pnpm run milvus:smoke
+```
+
+输出示例：
+
+```
+Milvus version: 2.6.0
+Milvus health: true
+Collections: ['rag_documents']
+```
+
+### 创建 Collection
+
+使用预设 Schema 创建 Collection：
+
+```bash
+EMBEDDING_DIM=768 pnpm run milvus:init
+```
+
+### 入库文档
+
+准备一些 Markdown 文档，然后入库：
+
+```bash
+# 创建示例文档目录
+mkdir -p ~/Documents/my_docs
+echo "# 示例文档\n\n这是一个测试文档的内容。" > ~/Documents/my_docs/test.md
+
+# 更新配置文件中的数据源路径
+# 编辑 config.json，设置 dataSource.root = "~/Documents/my_docs"
+
+# 执行入库
+EMBED_PROVIDER=ollama \
+OLLAMA_MODEL=nomic-embed-text \
+EMBEDDING_DIM=768 \
+pnpm run milvus:ingest
+```
+
+### 语义检索
+
+搜索相似文档：
+
+```bash
+EMBED_PROVIDER=ollama \
+OLLAMA_MODEL=nomic-embed-text \
+EMBEDDING_DIM=768 \
+pnpm run milvus:search -- "测试文档"
+```
+
+## 示例
+
+### 示例 1: 使用预设 Schema
+
+```javascript
+import { getPresetSchema, describeSchema } from '../schemas.mjs'
+
+// 获取 RAG 文档 Schema
+const schema = getPresetSchema('rag')
+
+// 查看详细信息
+const desc = describeSchema(schema)
+console.log(JSON.stringify(desc, null, 2))
+```
+
+### 示例 2: 自定义 Schema
+
+```javascript
+import { createSchema, varCharField, floatVectorField } from '../schemas.mjs'
+
+const customSchema = createSchema({
+  collectionName: 'my_custom_collection',
+  dimension: 1024,
+  vectorFieldName: 'embedding',
+  customFields: [
+    varCharField('document_id', 64),
+    floatVectorField('embedding', 1024),
+    varCharField('content', 16384),
+    varCharField('tags', 512)
+  ]
+})
+```
+
+### 示例 3: 克隆并修改预设
+
+```javascript
+import { cloneSchema, getPresetSchema, varCharField } from '../schemas.mjs'
+
+// 基于 RAG Schema 创建
+const baseSchema = getPresetSchema('rag')
+
+// 添加自定义字段
+const mySchema = cloneSchema(baseSchema, {
+  collectionName: 'extended_rag',
+  dimension: 1536,
+  addFields: [
+    varCharField('author', 256),
+    varCharField('category', 128)
+  ]
+})
+```
+
+## 下一步
+
+- 📖 [Schema 预设详解](/schemas/) - 了解各种预设 Schema
+- 🔧 [API 参考](/api/) - 查看完整 API 文档
+- ⚙️ [配置文件说明](/guide/config) - 深入了解配置选项
+- 🚀 [MCP 服务器](/guide/mcp-server) - 集成 AI 应用
+
+## 常见问题
+
+### Q: Milvus 启动失败？
+
+**A:** 检查 Docker 服务是否运行，端口 19530 是否被占用：
+
+```bash
+docker ps
+lsof -i :19530
+```
+
+### Q: Ollama embedding 很慢？
+
+**A:** 调整并发数：
+
+```bash
+OLLAMA_CONCURRENCY=8 pnpm run milvus:ingest
+```
+
+### Q: 搜索结果不准确？
+
+**A:** 检查 Embedding 模型和距离度量是否匹配：
+
+- `nomic-embed-text` → `COSINE`
+- `text-embedding-3-small` → `IP`
+
+### Q: 如何更换 Embedding 模型？
+
+**A:** 在 [config.json](../config.json) 中修改配置，然后全量重建：
+
+```bash
+EMBEDDING_DIM=1536 pnpm run milvus:rebuild
+pnpm run milvus:ingest
+```

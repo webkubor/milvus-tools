@@ -13,5 +13,24 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.25.2",
     "@zilliz/milvus2-sdk-node": "^2.6.9"
-  }
+  },
+  "description": "> 目标：把 `~/Documents/AI_Common` 作为“根（Source of Truth）”，通过 **全量重建** 的方式，把内容切片、向量化并写入本机 **Milvus**，用于后续语义检索与 RAG 注入。",
+  "main": "milvus-mcp-server.js",
+  "directories": {
+    "example": "examples"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/webkubor/milvus-tools.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/webkubor/milvus-tools/issues"
+  },
+  "homepage": "https://github.com/webkubor/milvus-tools#readme"
 }

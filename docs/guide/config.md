@@ -1,6 +1,8 @@
 # 配置指南
 
-Milvus Tools 统一用 `config.json` 控制 Milvus、数据源、Embedding、切片、搜索等行为。默认配置位于仓库根目录，启动脚本会自动读取。你也可以通过环境变量覆盖某些字段。
+Milvus Tools 的所有行为都由仓库根目录的 `config.json` 控制：Milvus 地址与 collection、文本切片规则、Embedding 模型、搜索参数等都写在这里。每次运行 CLI 脚本（`pnpm run milvus:*`）前都自动读取该文件；你可以在编辑器中打开 `config.json`（或运行 `cat config.json`）确认默认值，也可以通过环境变量覆盖其中的字段。
+
+> 新手提示：如果还没看过 `config.json`，先用 `cat config.json` 或打开 VSCode/IDE 里的文件，按 Section（milvus、dataSource、embedding 等）逐块理解当前默认配置，再去调用脚本。很多问题都可以在这里发现，例如 embedding 维度是否匹配、Milvus 地址是否指向 127.0.0.1:19530。
 
 ## 配置结构一览
 

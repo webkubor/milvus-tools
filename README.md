@@ -142,7 +142,15 @@ pnpm run docs:dev
 
 配置细节请参考 `docs/guide/config.md`，与本仓库同步更新。
 
-### 4.7 GitHub Pages 自动发布
+### 4.7 Config 检查（小白指南）
+
+对于第一次接触本仓库的小白，建议按照下面顺序检查/修改配置：
+
+1. `cd ~/Documents/milvus-tools`，运行 `cat config.json` 或直接在编辑器左侧打开 `config.json`；不要假定默认值。
+2. 按 Section 阅读：`milvus` 控制 Milvus 地址/collection、`embedding` 说明使用 Ollama 的 `nomic-embed-text`（768 维）、`dataSource.task` 指的是 `~/Documents/AI_Common`。
+3. 如果你要换模型、路径或 Milvus 地址，先在 `config.json` 修改对应字段，保存后再通过 `pnpm run milvus:rebuild` + `pnpm run milvus:ingest` 让当前设置生效。
+
+### 4.8 GitHub Pages 自动发布
 
 `.github/workflows/deploy-docs.yml` 会在每次推送到 `master` 时运行 `pnpm run docs:build` 并把 `docs/.vitepress/dist` 发布到 `gh-pages` 分支。只要在仓库设置 > Pages 中将 Source 设为 `gh-pages`/`/`，GitHub Pages 就会自动渲染最新版文档，而且默认 URL 会是 `https://webkubor.github.io/milvus-tools/`（由 VitePress `base: '/milvus-tools/'` 驱动）。
 

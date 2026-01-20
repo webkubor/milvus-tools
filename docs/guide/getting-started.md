@@ -55,6 +55,8 @@ pnpm run milvus:init && \
 EMBED_PROVIDER=ollama OLLAMA_MODEL=nomic-embed-text EMBEDDING_DIM=768 pnpm run milvus:ingest
 ```
 
+默认 embedding 模型是 `nomic-embed-text`（768 维），已在 `config.json.embedding.ollama` 中配置；`EMBEDDING_DIM` 需与模型维度对齐，换模型后先 `pnpm run milvus:rebuild` 再 `pnpm run milvus:ingest`。
+
 之后运行 `pnpm run milvus:search -- "你的关键词"` 来验搜，`pnpm run milvus:smoke` 可随时确认服务健康。
 
 ## 快捷脚本

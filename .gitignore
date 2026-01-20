@@ -123,3 +123,4 @@ Thumbs.db
 # Milvus specific
 .milvus/
 milvus_data/
+docs/.vitepress/cache/

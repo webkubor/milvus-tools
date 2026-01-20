@@ -9,7 +9,8 @@
     "milvus:rebuild": "node scripts/collection/milvus-rebuild.mjs",
     "milvus:ingest": "node scripts/ingest/milvus-ingest-ai-common.mjs",
     "milvus:search": "node scripts/search/milvus-search.mjs",
-    "docs:dev": "vitepress dev docs"
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.25.2",

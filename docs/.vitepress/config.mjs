@@ -1,6 +1,7 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
+  base: '/milvus-tools/',
   title: 'Milvus Tools',
   description: '本地向量数据库解决方案，支持全量文档重建、语义检索和 RAG 注入',
   lang: 'zh-CN',

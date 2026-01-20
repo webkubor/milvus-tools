@@ -142,6 +142,10 @@ pnpm run docs:dev
 
 配置细节请参考 `docs/guide/config.md`，与本仓库同步更新。
 
+### 4.7 GitHub Pages 自动发布
+
+`.github/workflows/deploy-docs.yml` 会在每次推送到 `master` 时运行 `pnpm run docs:build` 并把 `docs/.vitepress/dist` 发布到 `gh-pages` 分支。只要在仓库设置 > Pages 中将 Source 设为 `gh-pages`/`/`，GitHub Pages 就会自动渲染最新版文档，而且默认 URL 会是 `https://webkubor.github.io/milvus-tools/`（由 VitePress `base: '/milvus-tools/'` 驱动）。
+
 所有脚本已根据功能归类到 `scripts/` 目录下（例如 `scripts/collection/`、`scripts/ingest/`、`scripts/search/`、`scripts/health/`、`scripts/mcp/`），共享模块置于 `scripts/common/`。`package.json` 中的 `milvus:*` 命令即通过这些组织好的入口文件连接 Milvus 服务。
 
 ## 5. 默认约定（你需要知道的“规则”）

@@ -1,5 +1,5 @@
 import { MilvusClient } from '@zilliz/milvus2-sdk-node'
-import { config } from './config-loader.mjs'
+import { config } from '../common/config-loader.mjs'
 
 const milvusConfig = config.getMilvusConfig()
 

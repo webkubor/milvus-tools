@@ -7,7 +7,7 @@
 ### 使用预设 Schema
 
 ```javascript
-import { getPresetSchema } from './schemas.mjs'
+import { getPresetSchema } from '../scripts/common/schemas.mjs'
 
 // 获取 RAG 文档 Schema
 const schema = getPresetSchema('rag')
@@ -18,7 +18,7 @@ console.log(schema.dimension)        // 768
 ### 创建自定义 Schema
 
 ```javascript
-import { createSchema, varCharField, floatVectorField } from './schemas.mjs'
+import { createSchema, varCharField, floatVectorField } from '../scripts/common/schemas.mjs'
 
 const customSchema = createSchema({
   collectionName: 'my_collection',
@@ -114,7 +114,7 @@ const customSchema = createSchema({
 ### 示例 1: 基于预设创建并调整
 
 ```javascript
-import { getPresetSchema, cloneSchema } from './schemas.mjs'
+import { getPresetSchema, cloneSchema } from '../scripts/common/schemas.mjs'
 
 const baseSchema = getPresetSchema('rag')
 const customSchema = cloneSchema(baseSchema, {
@@ -136,7 +136,7 @@ import {
   floatVectorField,
   varCharField,
   jsonField
-} from './schemas.mjs'
+} from '../scripts/common/schemas.mjs'
 
 const schema = createSchema({
   collectionName: 'custom_collection',

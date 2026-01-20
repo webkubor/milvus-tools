@@ -57,6 +57,16 @@ EMBED_PROVIDER=ollama OLLAMA_MODEL=nomic-embed-text EMBEDDING_DIM=768 pnpm run m
 
 之后运行 `pnpm run milvus:search -- "你的关键词"` 来验搜，`pnpm run milvus:smoke` 可随时确认服务健康。
 
+## 快捷脚本
+
+将常用命令包装成脚本，避免每次重复填写环境变量：
+
+```bash
+bash scripts/quick-launch.sh
+```
+
+脚本会先调用 `pnpm run milvus:init` 初始化 collection，然后默认使用 `ollama`（`nomic-embed-text`）批量入库。你可以通过设置 `OLLAMA_MODEL`、`EMBEDDING_DIM` 等环境变量覆盖默认值。
+
 ### 4. 配置 Ollama（可选，用于本地 Embedding）
 
 ```bash
@@ -131,7 +141,7 @@ pnpm run milvus:search -- "测试文档"
 ### 示例 1: 使用预设 Schema
 
 ```javascript
-import { getPresetSchema, describeSchema } from '../schemas.mjs'
+import { getPresetSchema, describeSchema } from '../../scripts/common/schemas.mjs'
 
 // 获取 RAG 文档 Schema
 const schema = getPresetSchema('rag')
@@ -144,7 +154,7 @@ console.log(JSON.stringify(desc, null, 2))
 ### 示例 2: 自定义 Schema
 
 ```javascript
-import { createSchema, varCharField, floatVectorField } from '../schemas.mjs'
+import { createSchema, varCharField, floatVectorField } from '../../scripts/common/schemas.mjs'
 
 const customSchema = createSchema({
   collectionName: 'my_custom_collection',
@@ -162,7 +172,7 @@ const customSchema = createSchema({
 ### 示例 3: 克隆并修改预设
 
 ```javascript
-import { cloneSchema, getPresetSchema, varCharField } from '../schemas.mjs'
+import { cloneSchema, getPresetSchema, varCharField } from '../../scripts/common/schemas.mjs'
 
 // 基于 RAG Schema 创建
 const baseSchema = getPresetSchema('rag')
@@ -177,6 +187,29 @@ const mySchema = cloneSchema(baseSchema, {
   ]
 })
 ```
+
+## 脚本功能块
+
+以下脚本分块组织了 Milvus 工具链的核心流程，方便你根据功能快速查找：
+
+### Collection 管理
+- `milvus:init` (`scripts/collection/milvus-init-collection.mjs`)：使用当前配置或 `EMBEDDING_DIM` 创建 collection、索引并加载，适合第一次初始化或扩容。  
+- `milvus:rebuild` (`scripts/collection/milvus-rebuild.mjs`)：全量删除并重建 collection，通常搭配 `milvus:ingest` 做干净重建。  
+- `milvus:smoke` (`scripts/health/milvus-smoke.mjs`)：检查 Milvus 版本、健康状态和已有 collection，便于快速验连。
+
+### 数据切片与入库
+- `milvus:ingest` (`scripts/ingest/milvus-ingest-ai-common.mjs`)：遍历 `AI_Common`、切片、Embedding（可选 Ollama/OpenAI/mock）并写入 Milvus。  
+- `milvus-chunker.mjs`：Markdown 切片逻辑（标题拆分、长度控制），又位于 `scripts/ingest/milvus-chunker.mjs`。  
+- `milvus-embed-ollama.mjs` / `milvus-embed-mock.mjs`：分别实现 Ollama 与 Mock Embedding 接口（同样在 `scripts/ingest/` 目录）。
+
+### 语义检索
+- `milvus:search` (`scripts/search/milvus-search.mjs`)：调用 Milvus 搜索并输出 Top-K 结果，用于验证入库质量或构建 RAG 查询链路。
+
+### MCP 服务与工具
+- `milvus-mcp-server.js`：MCP Server 实现（文档另见 [MCP 服务器指南](/guide/mcp-server)），可以暴露 Milvus 为 Claude/Gemini 可调用工具，当前位于 `scripts/mcp/milvus-mcp-server.js`。  
+- `config-loader.mjs` / `schemas.mjs`：分别位于 `scripts/common/config-loader.mjs` 与 `scripts/common/schemas.mjs`，为各类脚本提供配置与 Schema 预设。
+
+- 脚本和模块均已按功能归类到 `scripts/` 目录（例如 `scripts/collection/`、`scripts/ingest/`、`scripts/search/` 等），按需组合即可构建全量重建、语义搜和 MCP 接入的工作流。已有 `scripts/quick-launch.sh` 将 collection 初始化 + 入库打包成一条命令，适合快速实验。
 
 ## 下一步
 

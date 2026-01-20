@@ -4,8 +4,16 @@
  * 演示如何使用预设 Schema 和创建自定义 Schema
  */
 
-import { getPresetSchema, createSchema, cloneSchema, describeSchema } from '../schemas.mjs'
-import { varCharField, floatVectorField, jsonField } from '../schemas.mjs'
+import {
+  getPresetSchema,
+  createSchema,
+  cloneSchema,
+  describeSchema,
+  PRESET_SCHEMAS,
+  varCharField,
+  floatVectorField,
+  jsonField
+} from '../scripts/common/schemas.mjs'
 
 // ============================================
 // 示例 1: 使用预设 Schema

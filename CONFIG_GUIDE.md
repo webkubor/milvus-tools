@@ -161,7 +161,7 @@ pnpm run milvus:ingest
 ## 代码中使用配置
 
 ```javascript
-import { config } from './config-loader.mjs'
+import { config } from './scripts/common/config-loader.mjs'
 
 // 获取完整配置
 const allConfig = config.getAll()

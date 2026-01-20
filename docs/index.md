@@ -71,7 +71,7 @@ pnpm install
 ### 使用预设 Schema
 
 ```javascript
-import { getPresetSchema } from './schemas.mjs'
+import { getPresetSchema } from '../scripts/common/schemas.mjs'
 
 // 获取 RAG 文档 Schema
 const schema = getPresetSchema('rag')

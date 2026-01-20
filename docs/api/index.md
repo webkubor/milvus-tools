@@ -27,10 +27,10 @@ import {
   floatVectorField,
   int64Field,
   jsonField
-} from './schemas.mjs'
+} from '../../scripts/common/schemas.mjs'
 
 // 配置加载器
-import { config } from './config-loader.mjs'
+import { config } from '../../scripts/common/config-loader.mjs'
 
 // 切片器（待实现）
 // import { Chunker } from './src/chunker/index.mjs'
@@ -44,7 +44,7 @@ import { config } from './config-loader.mjs'
 ### 使用预设 Schema
 
 ```javascript
-import { getPresetSchema } from './schemas.mjs'
+import { getPresetSchema } from '../../scripts/common/schemas.mjs'
 
 const schema = getPresetSchema('rag')
 console.log(schema.collectionName)  // 'rag_documents'
@@ -54,7 +54,7 @@ console.log(schema.dimension)      // 768
 ### 创建自定义 Schema
 
 ```javascript
-import { createSchema, varCharField, floatVectorField } from './schemas.mjs'
+import { createSchema, varCharField, floatVectorField } from '../../scripts/common/schemas.mjs'
 
 const schema = createSchema({
   collectionName: 'my_collection',
@@ -70,7 +70,7 @@ const schema = createSchema({
 ### 读取配置
 
 ```javascript
-import { config } from './config-loader.mjs'
+import { config } from '../../scripts/common/config-loader.mjs'
 
 // 获取完整配置
 const allConfig = config.getAll()

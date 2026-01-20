@@ -4,11 +4,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "milvus:smoke": "node milvus-smoke.mjs",
-    "milvus:init": "node milvus-init-collection.mjs",
-    "milvus:rebuild": "node milvus-rebuild.mjs",
-    "milvus:ingest": "node milvus-ingest-ai-common.mjs",
-    "milvus:search": "node milvus-search.mjs"
+    "milvus:smoke": "node scripts/health/milvus-smoke.mjs",
+    "milvus:init": "node scripts/collection/milvus-init-collection.mjs",
+    "milvus:rebuild": "node scripts/collection/milvus-rebuild.mjs",
+    "milvus:ingest": "node scripts/ingest/milvus-ingest-ai-common.mjs",
+    "milvus:search": "node scripts/search/milvus-search.mjs"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.25.2",

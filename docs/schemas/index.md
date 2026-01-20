@@ -16,7 +16,7 @@ Milvus Tools 提供一套常用 Schema，覆盖文档、代码、图像、多语
 ## 使用方式
 
 ```javascript
-import { getPresetSchema, describeSchema } from '../schemas.mjs'
+import { getPresetSchema, describeSchema } from '../../scripts/common/schemas.mjs'
 
 const schema = getPresetSchema('rag')
 console.log(schema.collectionName)
@@ -28,7 +28,7 @@ console.log(describeSchema(schema))
 你可以通过 `createSchema` 构建自定义集合：
 
 ```javascript
-import { createSchema, floatVectorField, varCharField } from '../schemas.mjs'
+import { createSchema, floatVectorField, varCharField } from '../../scripts/common/schemas.mjs'
 
 const custom = createSchema({
   collectionName: 'ai_reports',
@@ -45,7 +45,7 @@ const custom = createSchema({
 此外，可以使用 `cloneSchema` 在已有 Schema 上增加字段或调整索引：
 
 ```javascript
-import { getPresetSchema, cloneSchema, varCharField } from '../schemas.mjs'
+import { getPresetSchema, cloneSchema, varCharField } from '../../scripts/common/schemas.mjs'
 
 const schema = cloneSchema(getPresetSchema('rag'), {
   collectionName: 'rag_with_meta',

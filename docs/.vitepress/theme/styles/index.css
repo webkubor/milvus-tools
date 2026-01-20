@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+:root {
+  --vp-font-base: 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --vp-font-heading: 'Space Grotesk', 'Manrope', sans-serif;
+  --vp-c-brand: #ff7a28;
+  --vp-c-brand-emphasis: #ffd478;
+  --vp-c-brand-muted: #f9c38a;
+  --vp-c-page: #020b18;
+  --vp-c-gradient: linear-gradient(135deg, #0f1f3c 0%, #121d3c 40%, #171f42 100%);
+  --vp-c-content: #dbe6ff;
+  --vp-c-muted: #8ca2c8;
+  --vp-c-border: rgba(255, 255, 255, 0.08);
+  --vp-c-field: rgba(255, 255, 255, 0.04);
+  --vp-c-toolbar: rgba(16, 23, 45, 0.8);
+  --vp-c-shadow: 0 20px 60px rgba(5, 8, 20, 0.6);
+}
+
+body {
+  background: var(--vp-c-page);
+  color: var(--vp-c-content);
+}
+
+.vp-nav, .vp-footer {
+  background: var(--vp-c-gradient);
+  border-color: transparent;
+}
+
+.vp-nav__list, .vp-footer .vp-social-links {
+  font-family: var(--vp-font-heading);
+}
+
+.vp-nav__item a {
+  position: relative;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.vp-nav__item a::after {
+  content: '';
+  position: absolute;
+  inset: auto 50% 0;
+  width: 0;
+  height: 2px;
+  background: var(--vp-c-brand);
+  opacity: 0;
+  transition: width 0.3s ease, opacity 0.3s ease;
+}
+
+.vp-nav__item a:hover::after,
+.vp-nav__item a.router-link-active::after {
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  opacity: 1;
+}
+
+.vp-doc-content {
+  background: rgba(4, 8, 25, 0.65);
+  border: 1px solid var(--vp-c-border);
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: var(--vp-c-shadow);
+  backdrop-filter: blur(18px);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--vp-font-heading);
+  color: var(--vp-c-content);
+}
+
+blockquote {
+  border-left-color: var(--vp-c-brand);
+  color: var(--vp-c-muted);
+}
+
+.vp-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--vp-c-border);
+}
+
+.vp-table th,
+.vp-table td {
+  border-color: rgba(255, 255, 255, 0.04);
+}
+
+.vp-badge {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--vp-c-border);
+  color: var(--vp-c-content);
+}
+
+.vp-footer {
+  font-family: var(--vp-font-base);
+}

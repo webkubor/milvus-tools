@@ -2,60 +2,76 @@ import fs from 'fs';
 import path from 'path';
 
 const LOG_DIR = path.join(process.cwd(), 'logs');
-const MAX_LOGS = 30;
+const MAX_ENTRIES = 30;
+const ENTRY_SEPARATOR = '==================================================\n';
 
-// 确保日志目录存在
 if (!fs.existsSync(LOG_DIR)) {
   fs.mkdirSync(LOG_DIR, { recursive: true });
 }
 
 function getLogFilePath() {
   const now = new Date();
-  const dateStr = now.toISOString().split('T')[0]; // YYYY-MM-DD
+  const dateStr = now.toISOString().split('T')[0];
   return path.join(LOG_DIR, `milvus-tools-${dateStr}.log`);
 }
 
 /**
- * 记录操作日志 (按天轮转，保留最近 30 条)
- * @param {string} action - 操作名称 (e.g., 'SEARCH', 'INGEST', 'INIT')
- * @param {object|string} details - 操作详情
- * @param {string} level - 日志级别 ('INFO', 'ERROR', 'WARN')
+ * 记录直观、可读的操作日志
  */
 export async function logAction(action, details, level = 'INFO') {
-  const timestamp = new Date().toISOString();
+  const now = new Date();
+  const timeStr = now.toLocaleString('zh-CN', { hour12: false });
   
-  // 统一转为单行 JSON 字符串，方便按行处理
-  const detailObj = typeof details === 'string' ? { message: details } : details;
-  const logEntryObj = {
-    timestamp,
-    level,
-    action,
-    details: detailObj
-  };
-  const logEntryLine = JSON.stringify(logEntryObj) + '\n';
+  let entry = `[${timeStr}] [${action}] [${level}]\n`;
+
+  if (action === 'SEARCH') {
+    entry += `🔍 查询词: ${details.query}\n`;
+    if (details.expandedQuery !== details.query) {
+      entry += `扩展词: ${details.expandedQuery}\n`;
+    }
+    entry += `📊 结果: 命中 ${details.resultsCount} 条 (TopK: ${details.topK})\n`;
+    entry += `⏱️ 耗时: ${details.durationMs}ms\n`;
+    if (details.topResults && details.topResults.length > 0) {
+      entry += `📌 命中摘要:\n`;
+      details.topResults.forEach((res, i) => {
+        entry += `   ${i + 1}. [${res.score.toFixed(4)}] ${res.title} -> ${res.path}\n`;
+      });
+    }
+  } else if (action === 'INGEST') {
+    entry += `📥 入库完成\n`;
+    entry += `📁 文件总数: ${details.filesCount}\n`;
+    entry += `🧩 切片总数: ${details.chunksCount}\n`;
+    entry += `🧠 模型: ${details.embedProvider} (维度: ${details.dim})\n`;
+    entry += `📦 集合: ${details.collectionName}\n`;
+  } else if (action === 'INIT' || action === 'REBUILD') {
+    entry += `🛠️ 维护操作: ${action}\n`;
+    entry += `📦 集合: ${details.collectionName}\n`;
+    entry += `📐 维度: ${details.dim}\n`;
+    entry += `状态: ${details.status || 'Success'}\n`;
+  } else {
+    entry += `详情: ${JSON.stringify(details, null, 2)}\n`;
+  }
+  
+  entry += ENTRY_SEPARATOR;
 
   const logFile = getLogFilePath();
 
   try {
-    let lines = [];
+    let entries = [];
     if (fs.existsSync(logFile)) {
       const content = await fs.promises.readFile(logFile, 'utf8');
-      lines = content.split('\n').filter(line => line.trim() !== '');
+      entries = content.split(ENTRY_SEPARATOR).filter(e => e.trim() !== '');
     }
 
-    // 追加新日志
-    lines.push(logEntryLine.trim());
+    entries.push(entry.replace(ENTRY_SEPARATOR, ''));
 
-    // 截断超出部分（保留最后 MAX_LOGS 条）
-    if (lines.length > MAX_LOGS) {
-      lines = lines.slice(lines.length - MAX_LOGS);
+    if (entries.length > MAX_ENTRIES) {
+      entries = entries.slice(entries.length - MAX_ENTRIES);
     }
 
-    // 写回文件
-    await fs.promises.writeFile(logFile, lines.join('\n') + '\n', 'utf8');
-
+    await fs.promises.writeFile(logFile, entries.join(ENTRY_SEPARATOR) + ENTRY_SEPARATOR, 'utf8');
   } catch (err) {
-    console.error('Failed to write to log file:', err);
+    console.error('写入日志失败:', err);
   }
 }
 

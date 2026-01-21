@@ -1,202 +1,113 @@
-# milvus-tools（本机向量知识库工具箱）
-
-> 目标：把 `~/Documents/AI_Common` 作为“根（Source of Truth）”，通过 **全量重建** 的方式，把内容切片、向量化并写入本机 **Milvus**，用于后续语义检索与 RAG 注入。
-
-## 0. 目录结构
-
-- Milvus Docker Compose：`~/Documents/milvus/docker-compose.yml`
-- 本工具目录：`~/Documents/milvus-tools/`
-- 长期记忆（数据源）：`~/Documents/AI_Common/`
-
-## 1. 安装与启动（Milvus）
-
-### 1.1 启动 Docker Desktop
-
-先确保 Docker Desktop 已启动（否则 `docker compose` 会报无法连接 daemon）。
-
-### 1.2 启动 Milvus（standalone）
-
-```bash
-cd ~/Documents/milvus
-docker compose up -d
-```
-
-常用检查：
-
-```bash
-docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}" | rg -n "milvus-(standalone|minio|etcd|attu)"
-```
-
-### 1.3 打开 Milvus UI（Attu，可选）
-
-- 地址：`http://127.0.0.1:8000`
-- 默认连接地址（通常自动填好）：`milvus-standalone:19530`
-
-> 备注：Attu 在 2.6.x 起官方声明不再开源，但本机开发使用一般没问题；
-
-## 2. 安装与启动（本地免费 embedding：Ollama）
-
-本项目默认使用 **本地 Ollama** 做 embedding（免费策略），避免 API Key 与按量付费。
-
-- Ollama 官网：`https://ollama.com`
-- 本项目使用的 embedding 模型：`nomic-embed-text`（维度 768）
-
-### 2.1 安装与启动
-
-```bash
-brew install ollama
-brew services start ollama
-```
-
-### 2.2 拉取 embedding 模型
-
-```bash
-ollama pull nomic-embed-text
-```
-
-### 2.3 验证 Ollama 服务
-
-```bash
-curl -fsS http://127.0.0.1:11434/api/tags | head -n 1
-```
-
-### 2.4 重要：embedding 维度
-
-- `nomic-embed-text` 的 embedding 维度是 **768**（已实测）。
-- 因此 Milvus collection 的 `EMBEDDING_DIM` 必须是 **768**。
-- 如果你换 embedding 模型，第一件事是确认维度，并 **全量重建 collection**。
-
-## 3. 安装依赖（milvus-tools）
-
-```bash
-cd ~/Documents/milvus-tools
-pnpm install
-```
-
-## 4. 快捷指令（Scripts）
-
-所有脚本都在 `~/Documents/milvus-tools/package.json`。
-
-### 4.1 连接与健康检查
-
-```bash
-cd ~/Documents/milvus-tools
-pnpm run milvus:smoke
-```
-
-输出包括：Milvus 版本、健康状态、已有 collections。
-
-### 4.2 初始化/建表（如果 collection 不存在）
-
-```bash
-cd ~/Documents/milvus-tools
-EMBEDDING_DIM=768 pnpm run milvus:init
-```
-
-### 4.3 全量重建（推荐：更新文档后就用这个）
-
-> 全量重建会 drop `ai_common_chunks`，然后按当前维度重建 schema + 索引 + load。
-
-```bash
-cd ~/Documents/milvus-tools
-EMBEDDING_DIM=768 pnpm run milvus:rebuild
-```
-
-### 4.4 全量入库（切片 → 向量化 → 写入）
-
-> 默认数据源：`/Users/webkubor/Documents/AI_Common`
-
-```bash
-cd ~/Documents/milvus-tools
-EMBED_PROVIDER=ollama \
-OLLAMA_MODEL=nomic-embed-text \
-EMBEDDING_DIM=768 \
-pnpm run milvus:ingest
-```
-
-只看切片数量、不写入（dry-run）：
-
-```bash
-cd ~/Documents/milvus-tools
-pnpm run milvus:ingest -- --dry-run
-```
-
-### 4.5 语义检索测试（本地 embedding）
-
-```bash
-cd ~/Documents/milvus-tools
-EMBED_PROVIDER=ollama \
-OLLAMA_MODEL=nomic-embed-text \
-EMBEDDING_DIM=768 \
-pnpm run milvus:search -- "隐私 入库 排除"
-```
-
-### 4.6 本地预览文档站点
-
-```bash
-cd ~/Documents/milvus-tools
-pnpm run docs:dev
-```
-
-该命令会在 `http://localhost:4173`（默认）启动 VitePress 开发服务，自动编译 `docs/` 下的文档，方便看到最新改动。
-
-配置细节请参考 `docs/guide/config.md`，与本仓库同步更新。
-
-### 4.7 Config 检查（小白指南）
-
-对于第一次接触本仓库的小白，建议按照下面顺序检查/修改配置：
-
-1. `cd ~/Documents/milvus-tools`，运行 `cat config.json` 或直接在编辑器左侧打开 `config.json`；不要假定默认值。
-2. 按 Section 阅读：`milvus` 控制 Milvus 地址/collection、`embedding` 说明使用 Ollama 的 `nomic-embed-text`（768 维）、`dataSource.task` 指的是 `~/Documents/AI_Common`。
-3. 如果你要换模型、路径或 Milvus 地址，先在 `config.json` 修改对应字段，保存后再通过 `pnpm run milvus:rebuild` + `pnpm run milvus:ingest` 让当前设置生效。
-
-### 4.8 GitHub Pages 自动发布
-
-`.github/workflows/deploy-docs.yml` 会在每次推送到 `master` 时运行 `pnpm run docs:build` 并把 `docs/.vitepress/dist` 发布到 `gh-pages` 分支。只要在仓库设置 > Pages 中将 Source 设为 `gh-pages`/`/`，GitHub Pages 就会自动渲染最新版文档，而且默认 URL 会是 `https://webkubor.github.io/milvus-tools/`（由 VitePress `base: '/milvus-tools/'` 驱动）。
-
-所有脚本已根据功能归类到 `scripts/` 目录下（例如 `scripts/collection/`、`scripts/ingest/`、`scripts/search/`、`scripts/health/`、`scripts/mcp/`），共享模块置于 `scripts/common/`。`package.json` 中的 `milvus:*` 命令即通过这些组织好的入口文件连接 Milvus 服务。
-
-## 5. 默认约定（你需要知道的“规则”）
-
-### 5.1 Collection
-
-- 默认 collection：`ai_common_chunks`
-- 默认向量字段：`vector`
-
-### 5.2 切片（Chunking）
-
-- 以 Markdown 标题 `# / ## / ###` 切片
-- 建议长度：`minChars=200`、`maxChars=1200`
-- `chunk_id`：对 `(path + heading_path + index)` 做 sha1，保证稳定
-
-### 5.3 字段写入
-
-写入字段（用于后续检索注入）：
-- `chunk_id`, `vector`, `content`, `path`, `title`, `section`, `doc_type`, `updated_at`
-
-### 5.4 隐私边界
-
-- 入库前请遵循 `~/Documents/AI_Common/privacy_excludes.md`
-- 默认只扫描 `AI_Common` 目录下 `*.md`
-
-## 6. 推荐工作流（最短闭环）
-
-1. 修改 `~/Documents/AI_Common` 文档
-2. 全量重建：`pnpm run milvus:rebuild`
-3. 全量入库：`pnpm run milvus:ingest`
-4. 用 `milvus:search` 或 Attu UI 验证检索效果
+# 🤖 Milvus Tools
+
+<p align="center">
+  <img src="https://milvus.io/static/6744883d6a8b136894b7f8303f290d23/milvus_logo.svg" width="200" alt="Milvus Logo" />
+</p>
+
+<p align="center">
+  <a href="https://github.com/webkubor/milvus-tools/blob/master/LICENSE">
+    <img src="https://img.shields.io/github/license/webkubor/milvus-tools?style=flat-square&color=blue" alt="license" />
+  </a>
+  <a href="https://nodejs.org/">
+    <img src="https://img.shields.io/badge/node-%3E%3D18-green?style=flat-square&logo=node.js" alt="node version" />
+  </a>
+  <a href="https://milvus.io/">
+    <img src="https://img.shields.io/badge/VectorDB-Milvus-0696D7?style=flat-square" alt="milvus" />
+  </a>
+  <a href="https://ollama.com/">
+    <img src="https://img.shields.io/badge/Embedding-Ollama-white?style=flat-square&logo=ollama" alt="ollama" />
+  </a>
+</p>
 
 ---
 
-## 附：环境变量速查
+**Milvus Tools** 是一个专为本地 AI 工作流设计的向量知识库工具箱。它能自动将你的本地文档（如 `AI_Common`）切片、向量化并同步到 **Milvus** 数据库，为 RAG（检索增强生成）提供强大的语义检索支持。
 
-- `MILVUS_ADDR`：默认 `127.0.0.1:19530`
-- `MILVUS_COLLECTION`：默认 `ai_common_chunks`
-- `AI_COMMON_ROOT`：默认 `/Users/webkubor/Documents/AI_Common`
-- `EMBED_PROVIDER`：`ollama` / `mock`
-- `OLLAMA_BASE_URL`：默认 `http://127.0.0.1:11434`
-- `OLLAMA_MODEL`：默认 `nomic-embed-text`
-- `EMBEDDING_DIM`：本机 Ollama 默认 `768`
-- `TOPK`：搜索条数（默认 10）
-- `BATCH_SIZE`：入库 batch（默认 64）
-- `OLLAMA_CONCURRENCY`：embedding 并发（默认 4）
+## 🌟 核心特性
+
+- **🚀 零成本 Embedding**：默认集成本地 Ollama 引擎，无需 API Key。
+- **📝 智能切片**：基于 Markdown 语义的自动切片策略，保留文档上下文。
+- **📊 实时日志**：按天轮转的结构化操作日志，支持检索历史回溯。
+- **🛠️ 维护简便**：支持一键全量重建索引，确保数据一致性。
+- **🌐 完整生态**：配套可视化管理界面 (Attu) 与基于 VitePress 的技术文档。
+
+---
+
+## 🚀 快速开始
+
+### 1. 环境准备
+确保你的机器已安装以下服务：
+- [Milvus Standalone](https://milvus.io/docs/install_standalone-docker.md) (Docker 运行)
+- [Ollama](https://ollama.com/) (推荐模型: `nomic-embed-text`)
+
+### 2. 安装
+```bash
+git clone https://github.com/webkubor/milvus-tools.git
+cd milvus-tools
+pnpm install
+```
+
+### 3. 数据同步
+```bash
+# 全量初始化/重建并入库
+pnpm run milvus:rebuild
+pnpm run milvus:ingest
+```
+
+---
+
+## 📖 常用指令 (CLI)
+
+| 命令 | 描述 | 示例 |
+| :--- | :--- | :--- |
+| `pnpm run milvus:search` | **语义检索** | `pnpm run milvus:search -- "如何规范 commit"` |
+| `pnpm run milvus:ingest` | **文档入库** | `pnpm run milvus:ingest` |
+| `pnpm run milvus:rebuild` | **全量重建** | ⚠️ 重建表结构与索引 |
+| `pnpm run milvus:smoke` | **健康检查** | 查看数据库状态与版本 |
+| `pnpm run docs:dev` | **预览文档** | 启动 VitePress 文档站点 |
+
+---
+
+## 📝 智能日志系统
+
+日志存储在 `logs/` 目录，采用 **按天轮转** 策略，自动保留最近 30 条记录。
+
+```text
+[2026/1/21 15:36:00] [SEARCH] [INFO]
+🔍 查询词: -- git 规范
+📊 结果: 命中 10 条 (TopK: 10)
+⏱️ 耗时: 262ms
+📌 命中摘要:
+   1. [0.6629] index.md -> AI_Common/index.md
+```
+
+---
+
+## 🗄️ 数据库 Schema 字典
+
+Collection: `ai_common_chunks`
+
+| 字段 | 类型 | 说明 |
+| :--- | :--- | :--- |
+| `chunk_id` | VarChar | 切片 SHA1 唯一标识 |
+| `vector` | FloatVector(768) | 核心特征向量 |
+| `content` | VarChar | Markdown 文本片段 |
+| `path` | VarChar | 源文件相对路径 |
+| `section` | VarChar | Markdown 章节标题 |
+| `doc_type` | VarChar | 标签 (doc/rules/extension) |
+
+---
+
+## 🤝 参与贡献
+
+1. Fork 本仓库
+2. 创建你的特性分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交你的改动 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 开启一个 Pull Request
+
+---
+
+## 📄 开源协议
+
+本项目基于 [ISC License](LICENSE) 协议开源。

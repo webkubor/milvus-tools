@@ -175,7 +175,12 @@ await logAction('SEARCH', {
   expandedQuery,
   topK,
   resultsCount: res.results ? res.results.length : (Array.isArray(res) ? res.length : 0),
-  durationMs
+  durationMs,
+  topResults: (res.results || []).slice(0, 3).map(r => ({
+    title: r.title,
+    path: r.path,
+    score: r.score
+  }))
 })
 
 console.log(JSON.stringify(res, null, 2))

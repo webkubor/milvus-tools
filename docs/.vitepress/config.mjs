@@ -6,11 +6,11 @@ export default defineConfig({
   description: '本地向量数据库解决方案，支持全量文档重建、语义检索和 RAG 注入',
   lang: 'zh-CN',
   head: [
-    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/logo.svg' }]
+    ['link', { rel: 'icon', type: 'image/svg+xml', href: '/milvus-tools/milvus-logo.svg' }]
   ],
 
   themeConfig: {
-    logo: '/logo.svg',
+    logo: '/milvus-logo.svg',
     nav: [
       { text: '首页', link: '/' },
       { text: '快速开始', link: '/guide/getting-started' },

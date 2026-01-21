@@ -13,7 +13,7 @@ hero:
       text: 查看示例
       link: /guide/getting-started#示例
   image:
-    src: /logo.svg
+    src: /milvus-logo.svg
     alt: Milvus Tools
 
 features:

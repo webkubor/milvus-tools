@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "milvus:smoke": "node scripts/health/milvus-smoke.mjs",
+    "milvus:doctor": "node scripts/health/env-check.mjs",
+    "milvus:setup": "node scripts/common/setup.mjs",
     "milvus:init": "node scripts/collection/milvus-init-collection.mjs",
     "milvus:rebuild": "node scripts/collection/milvus-rebuild.mjs",
     "milvus:ingest": "node scripts/ingest/milvus-ingest-ai-common.mjs",
@@ -14,7 +16,8 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.25.2",
-    "@zilliz/milvus2-sdk-node": "^2.6.9"
+    "@zilliz/milvus2-sdk-node": "^2.6.9",
+    "inquirer": "^13.2.1"
   },
   "description": "Milvus 本地向量库工具，配套 VitePress 文档与 CLI 脚本，支持快速构建 AI RAG 工作流。",
   "main": "milvus-mcp-server.js",

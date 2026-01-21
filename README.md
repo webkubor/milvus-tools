@@ -61,6 +61,7 @@ pnpm run milvus:ingest
 | 命令 | 描述 | 示例 |
 | :--- | :--- | :--- |
 | `pnpm run milvus:search` | **语义检索** | `pnpm run milvus:search -- "如何规范 commit"` |
+| `pnpm run milvus:doctor` | **环境自检** | 🔍 检查 Node/Docker/Milvus/Ollama 状态 |
 | `pnpm run milvus:ingest` | **文档入库** | `pnpm run milvus:ingest` |
 | `pnpm run milvus:rebuild` | **全量重建** | ⚠️ 重建表结构与索引 |
 | `pnpm run milvus:smoke` | **健康检查** | 查看数据库状态与版本 |

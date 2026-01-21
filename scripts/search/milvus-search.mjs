@@ -1,7 +1,8 @@
 import { MilvusClient } from '@zilliz/milvus2-sdk-node'
 import fs from 'node:fs'
-import { embedMock } from './milvus-embed-mock.mjs'
-import { embedOllama } from './milvus-embed-ollama.mjs'
+import { embedMock } from '../ingest/milvus-embed-mock.mjs'
+import { embedOllama } from '../ingest/milvus-embed-ollama.mjs'
+import { logAction } from '../common/logger.mjs'
 
 const address = process.env.MILVUS_ADDR || '127.0.0.1:19530'
 const collectionName = process.env.MILVUS_COLLECTION || 'ai_common_chunks'
@@ -167,6 +168,14 @@ writeSearchLog({
   milvusAddress: address,
   milvusCollection: collectionName,
   attuUrl: cfgDocker.attuUrl
+})
+
+await logAction('SEARCH', {
+  query,
+  expandedQuery,
+  topK,
+  resultsCount: res.results ? res.results.length : (Array.isArray(res) ? res.length : 0),
+  durationMs
 })
 
 console.log(JSON.stringify(res, null, 2))

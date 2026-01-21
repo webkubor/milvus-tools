@@ -4,6 +4,7 @@ import { MilvusClient } from '@zilliz/milvus2-sdk-node'
 import { chunkMarkdown } from './milvus-chunker.mjs'
 import { embedMock } from './milvus-embed-mock.mjs'
 import { embedOllama } from './milvus-embed-ollama.mjs'
+import { logAction } from '../common/logger.mjs'
 
 const AI_COMMON_ROOT = process.env.AI_COMMON_ROOT || '/Users/webkubor/Documents/AI_Common'
 const address = process.env.MILVUS_ADDR || '127.0.0.1:19530'
@@ -140,3 +141,11 @@ console.log('写入完成，开始 flush')
 await client.flushSync({ collection_names: [collectionName] })
 
 console.log(`完成：AI_Common 已写入 Milvus（EMBED_PROVIDER=${embedProvider}，dim=${dim}）`)
+
+await logAction('INGEST', {
+  filesCount: filtered.length,
+  chunksCount: allChunks.length,
+  embedProvider,
+  dim,
+  collectionName
+})

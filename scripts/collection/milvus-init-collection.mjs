@@ -1,4 +1,5 @@
 import { DataType, MilvusClient } from '@zilliz/milvus2-sdk-node'
+import { logAction } from '../common/logger.mjs'
 
 const address = process.env.MILVUS_ADDR || '127.0.0.1:19530'
 const collectionName = process.env.MILVUS_COLLECTION || 'ai_common_chunks'
@@ -87,3 +88,9 @@ console.log('已创建/确保 vector 索引: HNSW(COSINE)')
 
 await client.loadCollectionSync({ collection_name: collectionName })
 console.log('已 load collection')
+
+await logAction('INIT', {
+  collectionName,
+  dim,
+  status: exists ? 'EXISTED' : 'CREATED'
+})

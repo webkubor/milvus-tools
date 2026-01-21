@@ -1,98 +1,51 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
-
 :root {
-  --vp-font-base: 'Space Grotesk', 'Manrope', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --vp-font-heading: 'Space Grotesk', 'Manrope', sans-serif;
-  --vp-c-brand: #ff6d1a;
-  --vp-c-brand-emphasis: #ff9b4a;
-  --vp-c-brand-muted: #ffb15a;
-  --vp-c-page: #09070d;
-  --vp-c-gradient: linear-gradient(135deg, #11131b 0%, #1e0f19 60%, #281b15 100%);
-  --vp-c-gradient-alt: linear-gradient(145deg, rgba(255, 109, 26, 0.35), rgba(255, 109, 26, 0));
-  --vp-c-content: #fff0d9;
-  --vp-c-muted: #ffdcbc;
-  --vp-c-border: rgba(255, 255, 255, 0.18);
-  --vp-c-field: rgba(255, 255, 255, 0.05);
-  --vp-c-toolbar: rgba(10, 10, 10, 0.9);
-  --vp-c-shadow: 0 35px 70px rgba(11, 5, 2, 0.7);
+  /* Milvus Brand Colors */
+  --vp-c-brand-1: #0696D7;
+  --vp-c-brand-2: #33AADD;
+  --vp-c-brand-3: #66BFE3;
+  --vp-c-brand-soft: rgba(6, 150, 215, 0.14);
+
+  /* Backgrounds */
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: -webkit-linear-gradient(120deg, #0696D7 30%, #33AADD);
+  
+  /* Font Families */
+  --vp-font-family-base: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  --vp-font-family-mono: 'JetBrains Mono', 'Fira Code', 'Roboto Mono', monospace;
 }
 
-.vp-site {
-  background: var(--vp-c-page);
-  color: var(--vp-c-content);
+/* Dark Mode Overrides */
+.dark {
+  --vp-c-bg: #0f1117;
+  --vp-c-bg-alt: #161922;
+  --vp-c-bg-soft: #1c202b;
 }
 
-.vp-nav, .vp-footer {
-  background: linear-gradient(120deg, rgba(255, 109, 26, 0.2), rgba(21, 11, 4, 0.95));
-  border-color: transparent;
-  box-shadow: 0 8px 30px rgba(5, 2, 1, 0.7);
+/* Brand Button Styling */
+.VPButton.brand {
+  background-color: var(--vp-c-brand-1);
+  border-color: var(--vp-c-brand-1);
+  color: white;
+}
+.VPButton.brand:hover {
+  background-color: var(--vp-c-brand-2);
+  border-color: var(--vp-c-brand-2);
 }
 
-.vp-nav__list, .vp-footer .vp-social-links {
-  font-family: var(--vp-font-heading);
+/* Home Page Hero Styling */
+.image-bg {
+  filter: blur(40px);
+  opacity: 0.5;
+  background-image: linear-gradient(135deg, var(--vp-c-brand-1) 0%, var(--vp-c-brand-3) 100%);
 }
 
-.vp-nav__item a {
-  position: relative;
-  transition: color 0.25s ease, transform 0.25s ease;
+/* Custom Block Styling */
+.custom-block.tip {
+  border-color: var(--vp-c-brand-1);
+  background-color: var(--vp-c-brand-soft);
 }
 
-.vp-nav__item a::after {
-  content: '';
-  position: absolute;
-  inset: auto 50% 0;
-  width: 0;
-  height: 2px;
-  background: var(--vp-c-brand);
-  opacity: 0;
-  transition: width 0.3s ease, opacity 0.3s ease;
-}
-
-.vp-nav__item a:hover::after,
-.vp-nav__item a.router-link-active::after {
-  inset-inline-start: 50%;
-  transform: translateX(-50%);
-  width: 30px;
-  opacity: 1;
-}
-
-.vp-doc-content {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 22px;
-  padding: 2.75rem;
-  box-shadow: var(--vp-c-shadow);
-  backdrop-filter: blur(22px);
-}
-
-h1, h2, h3, h4 {
-  font-family: var(--vp-font-heading);
-  color: var(--vp-c-content);
-}
-
-blockquote {
-  border-left-color: var(--vp-c-brand);
-  color: var(--vp-c-muted);
-}
-
-.vp-table {
-  border-collapse: separate;
-  border-spacing: 0;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid var(--vp-c-border);
-}
-
-.vp-table th,
-.vp-table td {
-  border-color: rgba(255, 255, 255, 0.04);
-}
-
-.vp-badge {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid var(--vp-c-border);
-  color: var(--vp-c-content);
-}
-
-.vp-footer {
-  font-family: var(--vp-font-base);
+/* Sidebar & Nav Highlights */
+.VPNavBar .active, .VPSidebarItem.is-active > .item > .link {
+  color: var(--vp-c-brand-1);
 }

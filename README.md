@@ -1,7 +1,7 @@
 # 🤖 Milvus Tools
 
 <p align="center">
-  <img src="https://milvus.io/static/6744883d6a8b136894b7f8303f290d23/milvus_logo.svg" width="200" alt="Milvus Logo" />
+  <img src="docs/public/milvus-logo.svg" width="120" alt="Milvus Logo" />
 </p>
 
 <p align="center">
